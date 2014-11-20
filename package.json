@@ -1,0 +1,27 @@
+{
+  "name": "NodeChat",
+  "version": "0.0.0",
+  "description": "Following the book Building Scalable Apps with Redis and Node.js",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:djheru/scalable_node.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/djheru/scalable_node/issues"
+  },
+  "homepage": "https://github.com/djheru/scalable_node",
+  "dependencies": {
+    "connect-flash": "0.1.1",
+    "connect-redis": "1.4.7",
+    "ejs": "0.8.5",
+    "express": "4.6.1",
+    "express-partials": "0.2.0",
+    "redis": "0.10.1"
+  }
+}
