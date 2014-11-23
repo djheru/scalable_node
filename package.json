@@ -4,6 +4,7 @@
   "description": "Following the book Building Scalable Apps with Redis and Node.js",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,11 +18,16 @@
   },
   "homepage": "https://github.com/djheru/scalable_node",
   "dependencies": {
+    "body-parser": "1.4.3",
+    "connect": "3.0.2",
     "connect-flash": "0.1.1",
-    "connect-redis": "1.4.7",
+    "connect-redis": "2.0.0",
+    "cookie-parser": "1.3.2",
+    "csurf": "1.3.0",
     "ejs": "0.8.5",
     "express": "4.6.1",
     "express-partials": "0.2.0",
+    "express-session": "1.6.5",
     "redis": "0.10.1"
   }
 }
