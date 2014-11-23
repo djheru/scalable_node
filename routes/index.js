@@ -14,6 +14,7 @@ function login(req, res){
 };
 
 function loginProcess(req, res){
+  console.log('req.body', req.body);
   res.render('login', {title: 'Login'});
 };
 

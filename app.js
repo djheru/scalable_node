@@ -6,14 +6,15 @@ var express = require('express')
   , partials = require('express-partials')
   , cookieParser = require('cookie-parser')
   , session = require('express-session')
-  , RedisStore = require('connect-redis')(session);
+  , RedisStore = require('connect-redis')(session)
+  , bodyParser = require('body-parser');
 
 app.set('view engine', 'ejs');
 app.set('view options', {defaultLayout: 'layout'});
 
-app.use(log.logger);
 app.use(partials());
 app.use(express.static(__dirname + '/static'));
+app.use(log.logger);
 app.use(cookieParser('k3yb0ardca7m3ow'))
 app.use(session({
   secret: 'k3yb0ardca7m3ow',
@@ -21,6 +22,8 @@ app.use(session({
   resave: true,
   store: new RedisStore()
 }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
 
 /*
 //Inline middleware for example
