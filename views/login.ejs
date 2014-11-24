@@ -2,6 +2,14 @@
   <div class="col-sm-8 coll-sm-offset-2">
     <div class="row">
       <form method="post">
+
+        <% if(message.length > 0) { %>
+          <div class="alert alert-danger">
+            <%= message %>
+          </div>
+        <% } %>
+
+        <input type="hidden" name="_csrf" value="<%= token %>">
         <div class="col-sm-12">
           <div class="form-group">
             <label for="username">Username</label>

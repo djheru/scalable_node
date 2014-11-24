@@ -1,13 +1,17 @@
 var express = require('express')
   , app = express()
   , errorHandlers = require('./middleware/errorhandlers')
+  , util = require('./middleware/utilities')
   , routes = require('./routes')
   , log = require('./middleware/log')
   , partials = require('express-partials')
   , cookieParser = require('cookie-parser')
   , session = require('express-session')
   , RedisStore = require('connect-redis')(session)
-  , bodyParser = require('body-parser');
+  , bodyParser = require('body-parser')
+  , csrf = require('csurf')
+  , flash = require('connect-flash')
+  , config = require('./config');
 
 app.set('view engine', 'ejs');
 app.set('view options', {defaultLayout: 'layout'});
@@ -15,15 +19,22 @@ app.set('view options', {defaultLayout: 'layout'});
 app.use(partials());
 app.use(express.static(__dirname + '/static'));
 app.use(log.logger);
-app.use(cookieParser('k3yb0ardca7m3ow'))
+app.use(cookieParser(config.secret))
 app.use(session({
-  secret: 'k3yb0ardca7m3ow',
+  secret: config.secret,
   saveUninitialized: true,
   resave: true,
-  store: new RedisStore()
+  store: new RedisStore({
+    url: config.redisUrl
+  })
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(csrf());
+app.use(util.csrf);
+app.use(util.authenticated);
+app.use(flash());
+app.use(util.templateRoutes);
 
 /*
 //Inline middleware for example
@@ -37,11 +48,12 @@ app.use(function(req, res, next){
 })
 */
 
+//Thy routes
 app.get('/', routes.index);
-app.get('/login', routes.login);
-app.get('/account/login', routes.login)
-app.post('/login', routes.loginProcess);
-app.get('/chat', routes.chat);
+app.get(config.routes.login, routes.login);
+app.post(config.routes.login, routes.loginProcess);
+app.get(config.routes.logout, routes.logOut);
+app.get('/chat', [util.requireAuthentication], routes.chat);
 
 app.get('/error', function(req, res, next){
   next(new Error('an error'));
@@ -50,5 +62,5 @@ app.get('/error', function(req, res, next){
 app.use(errorHandlers.error);
 app.use(errorHandlers.notFound);
 
-app.listen(8000);
+app.listen(config.port);
 console.log("App server running on port 8000");
