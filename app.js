@@ -11,6 +11,7 @@ var express = require('express')
   , bodyParser = require('body-parser')
   , csrf = require('csurf')
   , flash = require('connect-flash')
+  , io = require('./socket.io')
   , config = require('./config');
 
 app.set('view engine', 'ejs');
@@ -62,5 +63,6 @@ app.get('/error', function(req, res, next){
 app.use(errorHandlers.error);
 app.use(errorHandlers.notFound);
 
-app.listen(config.port);
+var server = app.listen(config.port);
+io.startIo(server);
 console.log("App server running on port 8000");

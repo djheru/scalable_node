@@ -1,7 +1,8 @@
 var config = {
   port: 8000,
   secret: 'k3yb0ardca7m3ow',
-  redisUrl: 'redis://localhost',
+  redisHost: 'localhost',
+  redisPort: 6379,
   routes: {
     login: '/login',
     logout: '/logout'

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Ping Pong</title>
+    <script type="text/javascript" src="js/socket.io.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.js"></script>
+    <style>
+        .areas {float: left; width: 50%;}
+    </style>
+</head>
+<body>
+<div>
+    <input id="username">
+</div>
+<div class="areas default">
+    Default
+    <button class="join">Join</button>
+    <button class="ping">Ping</button>
+    <div>
+        Users
+        <ul class="users"></ul>
+    </div>
+    <div>
+        Events
+        <ul class="events"></ul>
+    </div>
+</div>
+<div class="areas vip">
+    VIP
+    <button class="join">Join</button>
+    <button class="ping">Ping</button>
+    <div>
+        Users
+        <ul class="users"></ul>
+    </div>
+    <div>
+        Events
+        <ul class="events"></ul>
+    </div>
+</div>
+
+<script>
+    var socket = io.connect('http://localhost:3000')
+            , vip = io.connect('http://localhost:3000/vip')
+            , $username = $('#username')
+            , $defaultArea = $('.default')
+            , $vipArea = $('.vip');
+
+    function createButton(user){
+        return '<li>' + user.username +
+                '<button class="private_ping" data-socket="' +
+                user.socket + '">Ping Me</button>';
+    };
+
+    function wireEvents(area, socketio){
+        var users = area.find('.users')
+                ,events = area.find('.events');
+
+        area.on('click', function(e){
+            console.log('e:', e)
+            if(e.target.className === 'join'){
+                socketio.emit('join', {username: $username.val()})
+            } else if (e.target.className === 'ping') {
+                console.log('emit ping')
+                socketio.emit('ping');
+            } else if (e.target.className === 'private_ping'){
+                socketio.emit('privatePing', {
+                    socket: e.target.getAttribute('data-socket')
+                });
+            }
+        });
+
+        socketio.on('join', function(user){
+            users.append(createButton(user))
+        });
+
+        socketio.on('ping', function(user){
+            console.log('user: ', (typeof user.priv === 'undefined'))
+            if(typeof user.priv === 'undefined'){
+                console.log('general ping')
+                events.append('<li>Ping from: ' + user.username + '</li>');
+            } else {
+                console.log('direct ping')
+                events.append('<li>Direct Ping from: ' + user.username + '</li>');
+            }
+        });
+    }
+    wireEvents($defaultArea, socket);
+    wireEvents($vipArea, vip);
+</script>
+</body>
+</html>
